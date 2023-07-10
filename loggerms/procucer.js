@@ -5,13 +5,17 @@ class Producer {
     channel;
 
     async createChannel() {
+        console.log('this url', config.rabbitMQ.url);
+
         const connection = await amqp.connect(config.rabbitMQ.url)
+        console.log('connected')
         this.channel = await connection.createChannel();
     }
 
     async publishMessage(routingKey, message) {
         if (!this.channel) {
             await this.createChannel();
+            console.log('channel created');
         }
 
         const exchangeName = config.rabbitMQ.exchangeName

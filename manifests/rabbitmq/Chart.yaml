@@ -1,0 +1,9 @@
+apiVersion: v2
+appVersion: v0.0.1
+name: rabbitmq
+version: 0.1.0
+description: A Helm chart for my rabbitmq message broker
+# dependencies:
+#   - name: crd-definitions
+#     repository: https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml
+#     condition: true

@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rabbitmq-ingress
+spec:
+  rules:
+    - host: rabbitm.queue.com
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: rabbitmq-amqp
+                port:
+                  number: 5672
+    - host: rabbitm.qui.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: rabbitmq
+                port:
+                  number: 15672
+            path: "/"
+            pathType: Prefix
+    - host: rabbitm.qmetrics.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: rabbitmq
+                port:
+                  number: 15692
+            path: /metrics
+            pathType: Prefix
