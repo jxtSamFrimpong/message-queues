@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcp-services
+  namespace: {{ .Release.Namespace }}
+data:
+  5672: "{{ .Release.Namespace }}/rabbitmq:5672"

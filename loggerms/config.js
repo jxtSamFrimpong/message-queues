@@ -1,6 +1,6 @@
 module.exports = {
     rabbitMQ: {
-        url: 'amqp://35.196.0.189:5672',
+        url: 'amqp://samuel:samuel@rabbitm.queue.com',
         exchangeName: 'logExchange'
     }
 }

@@ -1,36 +1,20 @@
+{{- if .Values.ingress.enabled -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: rabbitmq-ingress
+  name: rabbitmq
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
-  rules:
-    - host: rabbitm.queue.com
-      http:
-        paths:
-          - pathType: Prefix
-            path: "/"
-            backend:
-              service:
-                name: rabbitmq-amqp
-                port:
-                  number: 5672
-    - host: rabbitm.qui.com
-      http:
-        paths:
-          - backend:
-              service:
-                name: rabbitmq
-                port:
-                  number: 15672
-            path: "/"
-            pathType: Prefix
-    - host: rabbitm.qmetrics.com
-      http:
-        paths:
-          - backend:
-              service:
-                name: rabbitmq
-                port:
-                  number: 15692
-            path: /metrics
-            pathType: Prefix
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  rules: 
+{{ toYaml .Values.ingress.rules | nindent 6 }}
+  {{- if .Values.ingress.tlsEnable }}
+  tls: 
+{{ toYaml .Values.ingress.tls | nindent 6 }}
+  {{- end }}
+{{- end }}

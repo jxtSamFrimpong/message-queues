@@ -1,34 +1,30 @@
 apiVersion: rabbitmq.com/v1beta1
 kind: RabbitmqCluster
 metadata:
-    name: rabbitmq
+  name: rabbitmq
+  labels:
+    {{- include "rabbitmq.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: rabbitmq
-  replicas: 1
+      {{- include "rabbitmq.selectorLabels" . | nindent 6 }}
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   resources:
-    requests:
-      cpu: 500m
-      memory: 1Gi
-    limits:
-      cpu: 1
-      memory: 2Gi
-  image: rabbitmq:3.12-management
+    {{- toYaml .Values.resources | nindent 4 }}
+  image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+  {{- if .Values.image.pullPolicy }}
+  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  {{- end }}
+  ports: 
+    {{- toYaml .Values.container.ports | nindent 4}}
   rabbitmq:
+    {{- if .Values.additionalPlugins }}
     additionalPlugins:
-      - rabbitmq_prometheus
-      - rabbitmq_stream
+{{ toYaml .Values.additionalPlugins | nindent 8 }}
+    {{- end }}
+    {{- if .Values.additionalConfig }}
     additionalConfig: |
-      {{- if .Values.rabbitmqConf.default_user }}
-      default_user = {{ .Values.rabbitmqConf.default_user }}
-      {{- end }}
-      {{- if .Values.rabbitmqConf.default_pass }}
-      default_pass = {{ .Values.rabbitmqConf.default_pass }}
-      {{- end }}
-      {{- if .Values.rabbitmqConf.default_user_tags.administrator }}
-      default_user_tags.administrator = {{ .Values.rabbitmqConf.default_user_tags.administrator }}
-      {{- end }}
-      {{- if .Values.rabbitmqConf.log.console.level }}
-      log.console.level = {{ .Values.rabbitmqConf.log.console.level }}
-      {{- end }}
+{{ .Values.additionalConfig | nindent 8}}
+    {{- end }}
